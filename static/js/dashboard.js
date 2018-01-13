@@ -100,8 +100,8 @@ function postSetup() {
         $( "#connStatusCircle" ).css("background-color", "green");
         socket.emit('status', {data: 'Web client connected'});
         $.getJSON(raspAddr+"/api/v1/sys-info", function(result){
-            $( "#versionArea ").append(result.version);
-            $( "#ipaddrArea ").append(result.ipaddr);
+            $( "#versionArea ").html(result.version);
+            $( "#ipaddrArea ").html(result.ipaddr);
         });
         $.getJSON(raspAddr+"/api/v1/target-temp-degc", function(result){
             $( "#inputTargetTemp ").val(result.value);
