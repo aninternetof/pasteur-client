@@ -81,12 +81,31 @@ function postSetup() {
     });
     socket.on('log', function(msg) {
         console.log(msg);
-        data = JSON.parse(msg);
+        var data = JSON.parse(msg);
         $( "#inputCurrentTemp" ).val(data.temp_reading_degc);
+        $( "#inputTempMinutes" ).val(data.degc_minutes);
         if (data.enabled){
             $( "#inputRunName" ).val(data.name);
         }
         setEnabledState(data.enabled);
+    });
+    socket.on('event', function(msg) {
+        console.log(msg);
+        var data = JSON.parse(msg);
+        if (data.type == 'done'){
+            $( "#successAlert").show();
+        }
+        $( "#alertArea" ).append(
+            `
+                <div id="successAlert" class="alert alert-success alert-dismissible fade show" style="display: none;" role="alert">
+                    <strong>Done!</strong> Reached target.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+            `
+        )
     });
 
     $.getJSON(raspAddr+"/api/v1/target-temp-degc", function(result){
