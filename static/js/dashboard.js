@@ -13,7 +13,13 @@ function postSetup() {
     socket = io.connect(raspAddr);
     socket.on('connect', function () {
         console.log("Websocket connected");
-        socket.emit('status', {data: 'Connected'});
+        $("#connStatusCircle").css("background-color", "green");
+        socket.emit('status', {data: 'Web client connected'});
+    });
+    socket.on('disconnect', function () {
+        console.log("Websocket disconnected");
+        $("#connStatusCircle").css("background-color", "red");
+        socket.emit('status', {data: 'Web cleitn disonnected'});
     });
     socket.on('log', function(msg) {
         console.log(msg);
