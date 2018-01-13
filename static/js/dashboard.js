@@ -73,6 +73,16 @@ function postSetup() {
         console.log("Websocket connected");
         $( "#connStatusCircle" ).css("background-color", "green");
         socket.emit('status', {data: 'Web client connected'});
+        $.getJSON(raspAddr+"/api/v1/sys-info", function(result){
+            $( "#versionArea ").append(result.version);
+            $( "#ipaddrArea ").append(result.ipaddr);
+        });
+        $.getJSON(raspAddr+"/api/v1/target-temp-degc", function(result){
+            $( "#inputTargetTemp ").val(result.value);
+        });
+        $.getJSON(raspAddr+"/api/v1/target-degc-minutes", function(result){
+            $( "#inputTargetTempMinutes ").val(result.value);
+        });
     });
     socket.on('disconnect', function () {
         console.log("Websocket disconnected");
@@ -108,18 +118,6 @@ function postSetup() {
         )
     });
 
-    $.getJSON(raspAddr+"/api/v1/sys-info", function(result){
-        $( "#versionArea ").append(result.version);
-        $( "#ipaddrArea ").append(result.ipaddr);
-    });
-    $.getJSON(raspAddr+"/api/v1/target-temp-degc", function(result){
-        $( "#inputTargetTemp ").val(result.value);
-    });
-    $.getJSON(raspAddr+"/api/v1/target-degc-minutes", function(result){
-        $( "#inputTargetTempMinutes ").val(result.value);
-    });
-
-    
     $('#loginModal').modal('hide');
 }
 
@@ -132,7 +130,6 @@ function setEnabledState(isRunning) {
         $( "#cancelButton" ).hide()
         $( "#goButton" ).show()
         $( '#inputRunName' ).prop('readonly', false);
-        $( "#inputRunName" ).val("");
     }
 }
 
