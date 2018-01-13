@@ -120,6 +120,8 @@ function postSetup() {
         var data = JSON.parse(msg);
         $( "#inputCurrentTemp" ).val(data.temp_reading_degc);
         $( "#inputTempMinutes" ).val(data.degc_minutes);
+        $( "#inputTargetTemp" ).val(data.target_temp_degc);
+        $( "#inputTargetTempMinutes" ).val(data.target_degc_minutes);
         if (data.enabled){
             $( "#inputRunName" ).val(data.name);
         }
