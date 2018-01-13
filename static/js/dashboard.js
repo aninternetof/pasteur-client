@@ -135,7 +135,7 @@ function postSetup() {
         }
         $( "#alertArea" ).append(
             `
-                <div id="successAlert" class="alert alert-success alert-dismissible fade show" style="display: none;" role="alert">
+                <div id="successAlert" class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong>Done!</strong> Reached target.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -176,6 +176,20 @@ function getApiKey() {
             userId = data.user_id;
             apiKey = data.api_key;
             console.log("User id: " + userId + ", API Key: " + apiKey)
+            $( "#loginFailAlert").alert('close');
+        },
+        error: function(data) {
+            $( "#alertArea" ).append(
+                `
+                    <div id="loginFailAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Invalid credentials</strong> Entering read-only mode. Hit the "Auth" button to try logging in again.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                `
+            );
         }
     });
 }
