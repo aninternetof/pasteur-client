@@ -24,19 +24,30 @@
     <title>Pasteur | Ash & Elm</title>
   </head>
   <body>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+      <a class="navbar-brand" href="#">Ash & Elm Cider Co.</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <div class="circle" id="connStatusCircle"></div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick='$( "#loginModal" ).modal("show")' href="#">Auth</a>
+          </li>
+          <li class="nav-item">
+            <a id="versionArea" class="nav-link" href="#"></a>
+          </li>
+          <li class="nav-item">
+            <a id="ipaddrArea" class="nav-link" href="#"></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
     <div id="alertArea"></div>
-    <h1>Hello, world!</h1>
-
-    <h3 id="versionArea"></h3>
-    <h3 id="ipaddrArea"></h3>
-
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
-      Auth
-    </button>
-
-    <div class="circle" id="connStatusCircle"></div>
-
 
     <form>
       <div class="form-group row">
@@ -87,9 +98,6 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="loginModalLabel">Setup</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
           </div>
           <div class="modal-body">
             <form>
