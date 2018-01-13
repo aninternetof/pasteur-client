@@ -1,11 +1,18 @@
 console.log("Loaded dashboard.js")
 
+userId = null;
+apiKey = null;
+
 $( document ).ready(function() {
     $( "#cancelButton" ).hide()
     $( "#goButton" ).hide()
 
     $( "#inputTargetTemp" ).change(function() {
-        payload = {value: $( "#inputTargetTemp ").val()};
+        payload = {
+            value: $( "#inputTargetTemp ").val(),
+            user_id: userId,
+            api_key: apiKey,
+        }
         $.ajax({
             url:raspAddr+"/api/v1/target-temp-degc",
             type:"POST",
@@ -16,7 +23,11 @@ $( document ).ready(function() {
     });
 
     $( "#inputTargetTempMinutes" ).change(function() {
-        payload = {value: $( "#inputTargetTempMinutes ").val()};
+        payload = {
+            value: $( "#inputTargetTempMinutes").val(),
+            user_id: userId,
+            api_key: apiKey,
+        }
         $.ajax({
             url:raspAddr+"/api/v1/target-degc-minutes",
             type:"POST",
@@ -27,7 +38,11 @@ $( document ).ready(function() {
     });
 
     $( "#goButton").click(function() {
-        payload = {name: $( "#inputRunName ").val()};
+        payload = {
+            name: $( "#inputRunName").val(),
+            user_id: userId,
+            api_key: apiKey,
+        }
         console.log("Starting run");
         $.ajax({
             url:raspAddr+"/api/v1/run",
@@ -36,7 +51,11 @@ $( document ).ready(function() {
             contentType:"application/json; charset=utf-8",
             dataType:"json",
         });
-        payload = {value: true};
+        payload = {
+            value: true,
+            user_id: userId,
+            api_key: apiKey,
+        }
         $.ajax({
             url:raspAddr+"/api/v1/enabled",
             type:"POST",
@@ -48,7 +67,11 @@ $( document ).ready(function() {
     
     $( "#cancelButton").click(function() {
         console.log("Cancelling run");
-        payload = {value: false};
+        payload = {
+            value: false,
+            user_id: userId,
+            api_key: apiKey,
+        }
         $.ajax({
             url:raspAddr+"/api/v1/enabled",
             type:"POST",
@@ -68,6 +91,9 @@ $( document ).ready(function() {
 
 function postSetup() {
     raspAddr = $( "#inputRaspAddr" ).val();
+
+    getApiKey();
+
     socket = io.connect(raspAddr);
     socket.on('connect', function () {
         console.log("Websocket connected");
@@ -131,6 +157,25 @@ function setEnabledState(isRunning) {
         $( "#goButton" ).show()
         $( '#inputRunName' ).prop('readonly', false);
     }
+}
+
+function getApiKey() {
+    payload = {
+        username: $( "#inputUsername" ).val(),
+        password: $( "#inputPassword" ).val(),
+    };
+    $.ajax({
+        url:raspAddr+"/get-api-key",
+        type:"POST",
+        data:JSON.stringify(payload),
+        contentType:"application/json; charset=utf-8",
+        dataType:"json",
+        success: function(data) {
+            userId = data.user_id;
+            apiKey = data.api_key;
+            console.log("User id: " + userId + ", API Key: " + apiKey)
+        }
+    });
 }
 
 
