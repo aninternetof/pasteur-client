@@ -19,11 +19,12 @@ function postSetup() {
     socket.on('disconnect', function () {
         console.log("Websocket disconnected");
         $("#connStatusCircle").css("background-color", "red");
-        socket.emit('status', {data: 'Web cleitn disonnected'});
+        socket.emit('status', {data: 'Web client disconnected'});
     });
     socket.on('log', function(msg) {
         console.log(msg);
-        console.log(JSON.parse(msg).tempc_reading)
+        data = JSON.parse(msg);
+        $("#inputCurrentTemp").val(data.temp_reading_degc);
     });
     $('#loginModal').modal('hide');
 }
