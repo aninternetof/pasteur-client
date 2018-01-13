@@ -3,9 +3,36 @@ console.log("Loaded dashboard.js")
 userId = null;
 apiKey = null;
 
+
 $( document ).ready(function() {
     $( "#cancelButton" ).hide()
     $( "#goButton" ).hide()
+
+    ctx = $( "#myChart" );
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Temperature (deg. C)',
+                data: [],
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    bounds: 'ticks',
+                    ticks: {
+                        source: 'data'
+                    },
+                    time: {
+                        unit: 'second'
+                    }
+                }]
+            }
+        }
+    });
 
     $( "#inputTargetTemp" ).change(function() {
         payload = {
@@ -15,6 +42,21 @@ $( document ).ready(function() {
         }
         $.ajax({
             url:raspAddr+"/api/v1/target-temp-degc",
+            type:"POST",
+            data:JSON.stringify(payload),
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+        });
+    });
+
+    $( "#inputPeriod" ).change(function() {
+        payload = {
+            value: $( "#inputPeriod ").val(),
+            user_id: userId,
+            api_key: apiKey,
+        }
+        $.ajax({
+            url:raspAddr+"/api/v1/period_s",
             type:"POST",
             data:JSON.stringify(payload),
             contentType:"application/json; charset=utf-8",
@@ -122,9 +164,15 @@ function postSetup() {
         $( "#inputTempMinutes" ).val(data.degc_minutes);
         $( "#inputTargetTemp" ).val(data.target_temp_degc);
         $( "#inputTargetTempMinutes" ).val(data.target_degc_minutes);
+        $( "#inputPeriod" ).val(data.period_s);
         if (data.enabled){
             $( "#inputRunName" ).val(data.name);
         }
+        myChart.data.datasets[0].data.push({
+            x: Date.parse(data.timestamp),
+            y: data.temp_reading_degc
+        });
+        myChart.update();
         setEnabledState(data.enabled);
     });
     socket.on('event', function(msg) {
