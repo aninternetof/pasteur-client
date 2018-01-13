@@ -108,11 +108,15 @@ function postSetup() {
         )
     });
 
+    $.getJSON(raspAddr+"/api/v1/sys-info", function(result){
+        $( "#versionArea ").append(result.version);
+        $( "#ipaddrArea ").append(result.ipaddr);
+    });
     $.getJSON(raspAddr+"/api/v1/target-temp-degc", function(result){
-        $( "#inputTargetTemp ").val(result.value)
+        $( "#inputTargetTemp ").val(result.value);
     });
     $.getJSON(raspAddr+"/api/v1/target-degc-minutes", function(result){
-        $( "#inputTargetTempMinutes ").val(result.value)
+        $( "#inputTargetTempMinutes ").val(result.value);
     });
 
     
