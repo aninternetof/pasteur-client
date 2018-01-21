@@ -3,36 +3,52 @@ console.log("Loaded dashboard.js")
 userId = null;
 apiKey = null;
 
+var color = Chart.helpers.color;
+var config = {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: "Measured Temperature",
+            backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+            borderColor: window.chartColors.blue,
+            fill: true,
+            data: []
+        }]
+    },
+    options: {
+        legend: {
+            display: false
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            xAxes: [{
+                type: "time",
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Time'
+                },
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Temp (deg C)'
+                }
+            }]
+        }
+    }
+};
+
+window.onload = function() {
+    var ctx = document.getElementById("canvas").getContext("2d");
+    window.myLine = new Chart(ctx, config);
+};
 
 $( document ).ready(function() {
     $( "#cancelButton" ).hide()
     $( "#goButton" ).hide()
-
-    ctx = $( "#myChart" );
-    myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Temperature (deg. C)',
-                data: [],
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    bounds: 'ticks',
-                    ticks: {
-                        source: 'data'
-                    },
-                    time: {
-                        unit: 'second'
-                    }
-                }]
-            }
-        }
-    });
 
     $( "#inputTargetTemp" ).change(function() {
         payload = {
@@ -162,18 +178,22 @@ function postSetup() {
         var data = JSON.parse(msg);
         $( "#inputCurrentTemp" ).val(data.temp_reading_degc);
         $( "#inputTempMinutes" ).val(data.degc_minutes);
-        $( "#inputTargetTemp" ).val(data.target_temp_degc);
-        $( "#inputTargetTempMinutes" ).val(data.target_degc_minutes);
-        $( "#inputPeriod" ).val(data.period_s);
+        // $( "#inputTargetTemp" ).val(data.target_temp_degc);
+        // $( "#inputTargetTempMinutes" ).val(data.target_degc_minutes);
+        // $( "#inputPeriod" ).val(data.period_s);
         if (data.enabled){
             $( "#inputRunName" ).val(data.name);
         }
-        myChart.data.datasets[0].data.push({
-            x: Date.parse(data.timestamp),
-            y: data.temp_reading_degc
-        });
-        myChart.update();
         setEnabledState(data.enabled);
+        var newTime = moment(data.timestamp);
+        for (var index = 0; index < config.data.datasets.length; ++index) {
+            config.data.datasets[index].data.push({
+                x: newTime,
+                y: data.temp_reading_degc,
+            });
+        }
+
+        window.myLine.update();
     });
     socket.on('event', function(msg) {
         console.log(msg);

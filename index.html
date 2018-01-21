@@ -10,7 +10,8 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" crossorigin="anonymous"></script>
     <!-- Enable bootstrap 4 theme -->
     <script>window.__theme = 'bs4';</script>
 
@@ -20,7 +21,6 @@
     <link rel="stylesheet" href="./static/css/dashboard.css">
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-    <script src="./static/js/dashboard.js"></script>
 
     <title>Pasteur | Ash & Elm</title>
   </head>
@@ -49,63 +49,66 @@
     </nav>
 
     <div id="alertArea"></div>
+    <div class="container">
 
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="chart-container" style="position: relative; height:40vh; width:100vw">
-          <canvas id="myChart"></canvas>
+      <div class="row">
+        <div style="width:100%; height:40vh;">
+          <canvas id="canvas"></canvas>
         </div>
       </div>
+      
+      <div class="row">
+        <form>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="inputPeriod">Period</label>
+            <div class="col-sm-3">
+              <input type="text" value="4" class="form-control" id="inputPeriod">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="inputCurrentTemp">Current Temp (&deg;C)</label>
+            <div class="col-sm-3">
+              <input type="text" readonly value="No value read yet" class="form-control" id="inputCurrentTemp">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="inputTargetTemp">Target Temp (&deg;C)</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="inputTargetTemp", placeholder="200">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="inputTempMinutes">PU</label>
+            <div class="col-sm-3">
+              <input type="text" readonly class="form-control" id="inputTempMinutes" placeholder="No value read yet">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="inputTargetTempMinutes">Target PU</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="inputTargetTempMinutes" placeholder="4000">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="inputRunName">Run name</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="inputRunName" placeholder="Headlong">
+            </div>
+            <div class="col-sm-3">
+              <button type="button" class="btn btn-primary" id="goButton">
+                Go
+              </button>
+              <button type="button" class="btn btn-danger" id="cancelButton">
+                Cancel
+              </button>
+          </div>
+        </form>
+      </div>
+
     </div>
-    
-    <form>
-      <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="inputPeriod">Period</label>
-        <div class="col-sm-3">
-          <input type="text" value="4" class="form-control" id="inputPeriod">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="inputCurrentTemp">Current Temp (&deg;C)</label>
-        <div class="col-sm-3">
-          <input type="text" readonly value="No value read yet" class="form-control" id="inputCurrentTemp">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="inputTargetTemp">Target Temp (&deg;C)</label>
-        <div class="col-sm-3">
-          <input type="text" class="form-control" id="inputTargetTemp", placeholder="200">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="inputTempMinutes">PU</label>
-        <div class="col-sm-3">
-          <input type="text" readonly class="form-control" id="inputTempMinutes" placeholder="No value read yet">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="inputTargetTempMinutes">Target PU</label>
-        <div class="col-sm-3">
-          <input type="text" class="form-control" id="inputTargetTempMinutes" placeholder="4000">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="inputRunName">Run name</label>
-        <div class="col-sm-3">
-          <input type="text" class="form-control" id="inputRunName" placeholder="Headlong">
-        </div>
-        <div class="col-sm-3">
-          <button type="button" class="btn btn-primary" id="goButton">
-            Go
-          </button>
-          <button type="button" class="btn btn-danger" id="cancelButton">
-            Cancel
-          </button>
-      </div>
-    </form>
 
     <!-- Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
@@ -136,6 +139,9 @@
         </div>
       </div>
     </div>
+
+    <script src="./static/js/utils.js"></script>
+    <script src="./static/js/dashboard.js"></script>
 
   </body>
 </html>
