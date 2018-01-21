@@ -49,6 +49,8 @@ window.onload = function() {
 $( document ).ready(function() {
     $( "#cancelButton" ).hide()
     $( "#goButton" ).hide()
+    $( "#thermostatEnableButton" ).hide()
+    $( "#thermostatDisableButton" ).hide()
 
     $( "#inputTargetTemp" ).change(function() {
         payload = {
@@ -95,9 +97,40 @@ $( document ).ready(function() {
         });
     });
 
+    $( "#thermostatEnableButton").click(function() {
+        payload = {
+            value: true,
+            user_id: userId,
+            api_key: apiKey,
+        }
+        $.ajax({
+            url:raspAddr+"/api/v1/thermostat-enabled",
+            type:"POST",
+            data:JSON.stringify(payload),
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+        });
+    });
+    
+    $( "#thermostatDisableButton").click(function() {
+        payload = {
+            value: false,
+            user_id: userId,
+            api_key: apiKey,
+        }
+        $.ajax({
+            url:raspAddr+"/api/v1/thermostat-enabled",
+            type:"POST",
+            data:JSON.stringify(payload),
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+        });
+    });
+
     $( "#goButton").click(function() {
         payload = {
             name: $( "#inputRunName").val(),
+            enabled: true,
             user_id: userId,
             api_key: apiKey,
         }
@@ -109,29 +142,18 @@ $( document ).ready(function() {
             contentType:"application/json; charset=utf-8",
             dataType:"json",
         });
-        payload = {
-            value: true,
-            user_id: userId,
-            api_key: apiKey,
-        }
-        $.ajax({
-            url:raspAddr+"/api/v1/enabled",
-            type:"POST",
-            data:JSON.stringify(payload),
-            contentType:"application/json; charset=utf-8",
-            dataType:"json",
-        });
     });
     
     $( "#cancelButton").click(function() {
         console.log("Cancelling run");
         payload = {
-            value: false,
+            name: $( "#inputRunName").val(),
+            enabled: false,
             user_id: userId,
             api_key: apiKey,
         }
         $.ajax({
-            url:raspAddr+"/api/v1/enabled",
+            url:raspAddr+"/api/v1/run",
             type:"POST",
             data:JSON.stringify(payload),
             contentType:"application/json; charset=utf-8",
@@ -178,13 +200,19 @@ function postSetup() {
         var data = JSON.parse(msg);
         $( "#inputCurrentTemp" ).val(data.temp_reading_degc);
         $( "#inputTempMinutes" ).val(data.degc_minutes);
+        if (data.pump_on) {
+            $( "#inputPumpStatus" ).val('Running');
+        } else {
+            $( "#inputPumpStatus" ).val('Off');
+        }
         // $( "#inputTargetTemp" ).val(data.target_temp_degc);
         // $( "#inputTargetTempMinutes" ).val(data.target_degc_minutes);
         // $( "#inputPeriod" ).val(data.period_s);
-        if (data.enabled){
+        if (data.run_enabled){
             $( "#inputRunName" ).val(data.name);
         }
-        setEnabledState(data.enabled);
+        setRunEnabledState(data.run_enabled);
+        setThermostatEnabledState(data.thermostat_enabled);
         var newTime = moment(data.timestamp);
         for (var index = 0; index < config.data.datasets.length; ++index) {
             config.data.datasets[index].data.push({
@@ -217,7 +245,17 @@ function postSetup() {
     $('#loginModal').modal('hide');
 }
 
-function setEnabledState(isRunning) {
+function setThermostatEnabledState(isRunning) {
+    if (isRunning) {
+        $( "#thermostatDisableButton" ).show()
+        $( "#thermostatEnableButton" ).hide()
+    } else {
+        $( "#thermostatDisableButton" ).hide()
+        $( "#thermostatEnableButton" ).show()
+    }
+}
+
+function setRunEnabledState(isRunning) {
     if (isRunning) {
         $( "#cancelButton" ).show()
         $( "#goButton" ).hide()

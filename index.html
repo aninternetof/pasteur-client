@@ -56,57 +56,64 @@
           <canvas id="canvas"></canvas>
         </div>
       </div>
-      
-      <div class="row">
-        <form>
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="inputPeriod">Period</label>
-            <div class="col-sm-3">
-              <input type="text" value="4" class="form-control" id="inputPeriod">
+
+      <div class="form-row">
+        <div class="col">
+          <div class="form-row">
+            <div class="col-5">
+              <label class="col-form-label" for="inputCurrentTemp">Current Temp (&deg;C)</label>
+              <input type="text" readonly value="Unknown" class="form-control" id="inputCurrentTemp">
             </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="inputCurrentTemp">Current Temp (&deg;C)</label>
-            <div class="col-sm-3">
-              <input type="text" readonly value="No value read yet" class="form-control" id="inputCurrentTemp">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="inputTargetTemp">Target Temp (&deg;C)</label>
-            <div class="col-sm-3">
+            <div class="col-5">
+              <label class="col-form-label" for="inputTargetTemp">Target Temp (&deg;C)</label>
               <input type="text" class="form-control" id="inputTargetTemp", placeholder="200">
             </div>
+            <div class="col-5">
+              <label class="col-form-label" for="inputPumpStatus">Pump Status</label>
+              <input type="text" readonly value="Unknown" class="form-control" id="inputPumpStatus">
+            </div>
           </div>
-
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="inputTempMinutes">PU</label>
-            <div class="col-sm-3">
+          <div class="form-row" style="margin-top:10px;">
+            <div class="col-12">
+              <button type="button" class="btn btn-primary" id="thermostatEnableButton">
+                Enable Thermostat
+              </button>
+              <button type="button" class="btn btn-danger" id="thermostatDisableButton">
+                Disable Thermostat
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-row">
+            <div class="col-5">
+              <label class="col-form-label" for="inputTempMinutes">Current PU</label>
               <input type="text" readonly class="form-control" id="inputTempMinutes" placeholder="No value read yet">
             </div>
-          </div>
-
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="inputTargetTempMinutes">Target PU</label>
-            <div class="col-sm-3">
+            <div class="col-5">
+              <label class="col-form-label" for="inputTargetTempMinutes">Target PU</label>
               <input type="text" class="form-control" id="inputTargetTempMinutes" placeholder="4000">
             </div>
-          </div>
-
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="inputRunName">Run name</label>
-            <div class="col-sm-3">
+            <div class="col-10">
+              <label class="col-form-label" for="inputRunName">Run name</label>
               <input type="text" class="form-control" id="inputRunName" placeholder="Headlong">
             </div>
-            <div class="col-sm-3">
+          </div>
+          <div class="form-row" style="margin-top:10px;">
+            <div class="col-12">
               <button type="button" class="btn btn-primary" id="goButton">
-                Go
+                Start Run
               </button>
               <button type="button" class="btn btn-danger" id="cancelButton">
-                Cancel
+                Cancel Run
               </button>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
+      
+      <label style="margin-top:50px" class="col-form-label" for="inputPeriod">Period</label>
+      <input type="text" value="4" class="form-control" id="inputPeriod">
 
     </div>
 
